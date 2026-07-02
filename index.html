@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ប្រព័ន្ធគ្រប់គ្រងវត្តមាន និងសិស្សគេចម៉ោង - TruantGuard AI</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- 1. Header Area -->
+    <header class="app-header">
+      <div class="brand-container">
+        <div class="logo-badge">🏫</div>
+        <div class="brand-name">
+          <h1>TruantGuard AI</h1>
+          <p>ប្រព័ន្ធគ្រប់គ្រងវត្តមាន និងសិស្សគេចម៉ោង (Student Truancy Tracker)</p>
+        </div>
+      </div>
+      <div class="sync-status-indicator" id="syncStatusBox">
+        <div class="status-dot" id="syncStatusDot"></div>
+        <span id="syncStatusText">មិនទាន់ភ្ជាប់ Google Sheets</span>
+      </div>
+    </header>
+
+    <!-- 2. Dashboard Layout Grid -->
+    <div class="dashboard-grid">
+      
+      <!-- 2.1 Side Panel: Input Form & Setup Settings -->
+      <aside class="side-panel">
+        
+        <!-- Record Truancy Form Card -->
+        <div class="glass-card">
+          <h2 class="card-title">📝 កត់ត្រាសិស្សគេចម៉ោង (Log Truancy)</h2>
+          <form id="truancyForm">
+            
+            <div class="form-group">
+              <label class="form-label" for="studentName">ឈ្មោះសិស្ស (Student Name)</label>
+              <input type="text" id="studentName" class="form-input" placeholder="ឧ. សុខ ម៉ានី" required>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label" for="className">ថ្នាក់រៀន (Grade/Class)</label>
+              <select id="className" class="form-select" required>
+                <option value="" disabled selected>-- ជ្រើសរើសថ្នាក់ --</option>
+                <option value="12A">ថ្នាក់ទី 12A</option>
+                <option value="12B">ថ្នាក់ទី 12B</option>
+                <option value="11A">ថ្នាក់ទី 11A</option>
+                <option value="11B">ថ្នាក់ទី 11B</option>
+                <option value="10A">ថ្នាក់ទី 10A</option>
+                <option value="10B">ថ្នាក់ទី 10B</option>
+                <option value="9A">ថ្នាក់ទី 9A</option>
+                <option value="8A">ថ្នាក់ទី 8A</option>
+                <option value="7A">ថ្នាក់ទី 7A</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label" for="subjectName">មុខវិជ្ជា (Subject)</label>
+              <input type="text" id="subjectName" class="form-input" placeholder="ឧ. គណិតវិទ្យា, អក្សរសាស្ត្រខ្មែរ" required>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label" for="periodHour">ម៉ោងសិក្សា/វេន (Period/Hour)</label>
+              <select id="periodHour" class="form-select" required>
+                <option value="" disabled selected>-- ជ្រើសរើសម៉ោង --</option>
+                <option value="ម៉ោងទី ១ (Hour 1)">ម៉ោងទី ១ (Hour 1)</option>
+                <option value="ម៉ោងទី ២ (Hour 2)">ម៉ោងទី ២ (Hour 2)</option>
+                <option value="ម៉ោងទី ៣ (Hour 3)">ម៉ោងទី ៣ (Hour 3)</option>
+                <option value="ម៉ោងទី ៤ (Hour 4)">ម៉ោងទី ៤ (Hour 4)</option>
+                <option value="ម៉ោងទី ៥ (Hour 5)">ម៉ោងទី ៥ (Hour 5)</option>
+                <option value="ម៉ោងទី ៦ (Hour 6)">ម៉ោងទី ៦ (Hour 6)</option>
+                <option value="ម៉ោងទី ៧ (Hour 7)">ម៉ោងទី ៧ (Hour 7)</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label" for="truancyType">ប្រភេទអវត្តមាន (Truancy Type)</label>
+              <select id="truancyType" class="form-select" required>
+                <option value="គេចម៉ោង (Skipped Class)" selected>គេចម៉ោង (Skipped Class)</option>
+                <option value="ចេញមុនម៉ោង (Left Early)">ចេញមុនម៉ោង (Left Early)</option>
+                <option value="អវត្តមានគ្មានច្បាប់ (Absent)">អវត្តមានគ្មានច្បាប់ (Absent)</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label" for="reason">មូលហេតុ/កំណត់សម្គាល់ (Reason/Note)</label>
+              <textarea id="reason" class="form-textarea" placeholder="ព័ត៌មានលម្អិតបន្ថែម..."></textarea>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label" for="reporterTeacher">គ្រូរាយការណ៍ (Reporter Teacher)</label>
+              <input type="text" id="reporterTeacher" class="form-input" placeholder="ឈ្មោះលោកគ្រូ/អ្នកគ្រូ" required>
+            </div>
+            
+            <button type="submit" class="btn-submit">
+              <span>➕ រក្សាទុកទិន្នន័យ (Save Record)</span>
+            </button>
+            
+          </form>
+        </div>
+
+        <!-- Google Sheets Settings Card -->
+        <div class="glass-card">
+          <h2 class="card-title">⚙️ ភ្ជាប់ជាមួយ Google Sheets</h2>
+          <div class="form-group">
+            <label class="form-label" for="scriptUrl">Google Web App URL</label>
+            <input type="url" id="scriptUrl" class="form-input" placeholder="https://script.google.com/macros/s/.../exec">
+          </div>
+          <button id="btnSaveConfig" class="btn-submit" style="background: linear-gradient(135deg, var(--secondary) 0%, #0077b6 100%); box-shadow: 0 4px 15px var(--secondary-glow);">
+            <span>💾 រក្សាទុកការកំណត់</span>
+          </button>
+          
+          <!-- Quick Guide Accordion link -->
+          <div class="setup-guide-box">
+            <div class="setup-guide-title">ℹ️ របៀបបង្កើតឯកសារ Google Sheet</div>
+            <ul class="setup-steps">
+              <li>បង្កើត Google Sheet ថ្មីមួយ។</li>
+              <li>ចូលទៅកាន់ Extensions -> Apps Script។</li>
+              <li>លុបកូដចាស់ចោល រួចចម្លងកូដខាងក្រោមទៅដាក់៖</li>
+            </ul>
+            <div class="code-snippet-box">
+              <button class="btn-copy-code" id="btnCopyCode">Copy</button>
+              <pre id="codeSnippet">function doPost(e) {
+  try {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    var data = JSON.parse(e.postData.contents);
+    sheet.appendRow([
+      new Date(),
+      data.studentName,
+      data.className,
+      data.subjectName,
+      data.periodHour,
+      data.truancyType,
+      data.reason,
+      data.reporterTeacher
+    ]);
+    return ContentService.createTextOutput(JSON.stringify({"status":"success"}))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService.createTextOutput(JSON.stringify({"status":"error", "message": err.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}</pre>
+            </div>
+            <ul class="setup-steps" style="margin-top: 10px;">
+              <li>ចុច Deploy -> New deployment។</li>
+              <li>ជ្រើសរើស Web app, កំណត់ "Who has access" ទៅ "Anyone"។</li>
+              <li>ចម្លង Web app URL យកមកដាក់ក្នុងប្រអប់ខាងលើ។</li>
+            </ul>
+          </div>
+        </div>
+        
+      </aside>
+
+      <!-- 2.2 Main Dashboard Panel -->
+      <main class="main-panel">
+        
+        <!-- Stats Cards row -->
+        <section class="stats-row">
+          
+          <div class="stat-card">
+            <div class="stat-info">
+              <span class="stat-label">ករណីសរុប (Total Truancy)</span>
+              <span class="stat-value" id="totalRecords">0</span>
+            </div>
+            <div class="stat-icon-wrapper">🚨</div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-info">
+              <span class="stat-label">ថ្នាក់គេចច្រើនជាងគេ (Top Class)</span>
+              <span class="stat-value" id="topTruantClass" style="font-size: 1.4rem; padding-top: 6px;">N/A</span>
+            </div>
+            <div class="stat-icon-wrapper">🏫</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-info">
+              <span class="stat-label">ម៉ោងគេចច្រើនជាងគេ (Peak Hour)</span>
+              <span class="stat-value" id="topTruantPeriod" style="font-size: 1.1rem; padding-top: 8px;">N/A</span>
+            </div>
+            <div class="stat-icon-wrapper">🕒</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-info">
+              <span class="stat-label">មិនទាន់ស៊ីង (Pending Sync)</span>
+              <span class="stat-value" id="pendingSyncCount" style="color: var(--primary);">0</span>
+            </div>
+            <div class="stat-icon-wrapper">🔄</div>
+          </div>
+
+        </section>
+
+        <!-- Charts Grid -->
+        <section class="analytics-section">
+          
+          <!-- Chart 1: Class Analysis -->
+          <div class="glass-card">
+            <h3 class="card-title">📊 ស្ថិតិករណីគេចម៉ោងតាមថ្នាក់ (Truancy by Class)</h3>
+            <div class="chart-container" id="classChartContainer">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+          
+          <!-- Chart 2: Truancy Types -->
+          <div class="glass-card">
+            <h3 class="card-title">📈 ប្រភេទអវត្តមាន (Truancy Type Breakdown)</h3>
+            <div class="chart-container" id="typeChartContainer">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+        </section>
+
+        <!-- Records Table Section -->
+        <section class="glass-card" style="flex: 1;">
+          <div class="table-header-controls">
+            <h3 class="card-title" style="margin-bottom: 0;">📋 បញ្ជីសិស្សគេចម៉ោង (Truancy Ledger)</h3>
+            
+            <div class="search-input-wrapper">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="tableSearch" class="search-input" placeholder="ស្វែងរកឈ្មោះសិស្ស ឬថ្នាក់...">
+            </div>
+            
+            <div class="table-actions">
+              <button id="btnPrint" class="btn-secondary">🖨️ បោះពុម្ព (Print)</button>
+              <button id="btnExportCSV" class="btn-secondary">📤 នាំចេញ CSV</button>
+              <button id="btnForceSync" class="btn-secondary" style="color: var(--primary); border-color: var(--primary-glow);">🔄 Sync ទៅ Sheets</button>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="records-table">
+              <thead>
+                <tr>
+                  <th>កាលបរិច្ឆេទ (Date)</th>
+                  <th>ឈ្មោះសិស្ស (Name)</th>
+                  <th>ថ្នាក់ (Class)</th>
+                  <th>មុខវិជ្ជា (Subject)</th>
+                  <th>ម៉ោង (Hour)</th>
+                  <th>ប្រភេទ (Type)</th>
+                  <th>មូលហេតុ (Reason)</th>
+                  <th>គ្រូរាយការណ៍ (Reporter)</th>
+                  <th>សកម្មភាព</th>
+                </tr>
+              </thead>
+              <tbody id="recordsTableBody">
+                <!-- Records loaded via JS -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+      </main>
+
+    </div>
+
+  </div>
+
+  <!-- Toast Notification Overlay -->
+  <div class="toast-msg" id="toastMessage">
+    <span id="toastIcon">✨</span>
+    <span id="toastText">ជោគជ័យ!</span>
+  </div>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
